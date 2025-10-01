@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Главная страница заказов</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <style>
+    .table {
+        table-layout: fixed;
+        width: 100%;
+    }
+    .table thead th {
+        text-align: center;
+        vertical-align: middle;
+    }
+    .table tbody td {
+        text-align: left;
+        vertical-align: middle;
+    }
+    .table td {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .table td:nth-child(5) {
+        white-space: normal;
+        word-wrap: break-word;
+    }
+    </style>
+</head>
+
+<body class="bg-light">
+
+<div class="container py-5">
+    <h1 class="mb-4 text-center">Добавить заказ</h1>
+
+    <!-- Форма -->
+    <div class="card shadow-sm mb-5">
+        <div class="card-body">
+            <form method="post" class="row g-3">
+                {% csrf_token %}
+
+                <!-- Поле ФИО -->
+                <div class="col-md-6">
+                    <label for="{{ form.full_name.id_for_label }}" class="form-label">ФИО</label>
+                    {{ form.full_name }}
+                    {% if form.full_name.errors %}
+                        <div class="text-danger small">{{ form.full_name.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Поле Телефон -->
+                <div class="col-md-6">
+                    <label for="{{ form.phone_number.id_for_label }}" class="form-label">Телефон</label>
+                    {{ form.phone_number }}
+                    {% if form.phone_number.errors %}
+                        <div class="text-danger small">{{ form.phone_number.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Поле Модель -->
+                <div class="col-md-6">
+                    <label for="{{ form.phone_model.id_for_label }}" class="form-label">Модель</label>
+                    {{ form.phone_model }}
+                    {% if form.phone_model.errors %}
+                        <div class="text-danger small">{{ form.phone_model.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Поле Услуга -->
+                <div class="col-md-6">
+                    <label for="{{ form.service.id_for_label }}" class="form-label">Услуга</label>
+                    {{ form.service }}
+                    {% if form.service.errors %}
+                        <div class="text-danger small">{{ form.service.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Поле Комментарий -->
+                <div class="col-12">
+                    <label for="{{ form.comment.id_for_label }}" class="form-label">Комментарий</label>
+                    {{ form.comment }}
+                    {% if form.comment.errors %}
+                        <div class="text-danger small">{{ form.comment.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Кнопка Сохранить -->
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Таблица заказов -->
+    <h2 class="mb-3">Список заказов</h2>
+    {% if orders %}
+    <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle shadow-sm">
+            <thead class="table-dark">
+                <tr>
+                    <th><i class="bi bi-person"></i> ФИО</th>
+                    <th><i class="bi bi-telephone"></i> Телефон</th>
+                    <th><i class="bi bi-phone"></i> Модель</th>
+                    <th><i class="bi bi-tools"></i> Услуга</th>
+                    <th><i class="bi bi-chat-left-text"></i> Комментарий</th>
+                    <th><i class="bi bi-calendar-event"></i> Создано</th>
+                    <th><i class="bi bi-arrow-repeat"></i> Обновлено</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td>{{ order.full_name }}</td>
+                    <td>{{ order.phone_number }}</td>
+                    <td>{{ order.phone_model }}</td>
+                    <td>{{ order.service }}</td>
+                    <td>{{ order.comment }}</td>
+                    <td>{{ order.created_at|date:"d.m.Y H:i" }}</td>
+                    <td>{{ order.updated_at|date:"d.m.Y H:i" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="alert alert-info" role="alert">
+        Пока нет заказов.
+    </div>
+    {% endif %}
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Inputmask JS для телефона -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/inputmask/5.0.8/inputmask.min.js"></script>
+<script>
+    var phoneInput = document.querySelector('input[name="phone_number"]');
+    if (phoneInput) {
+        var im = new Inputmask("+7 (999) 999-99-99");
+        im.mask(phoneInput);
+    }
+</script>
+
+</body>
+</html>
